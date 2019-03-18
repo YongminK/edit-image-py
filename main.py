@@ -42,7 +42,8 @@ for i in np.arange(2, height-2):
         b = sum
         img_out.itemset((i,j), b)
 
-cv2.imwrite('filter_gauss2.bmp', img_out)
+newName = 'sigma'+str(sigma)+'.bmp'
+cv2.imwrite(newName, img_out)
 
 cv2.imshow('image',img_out)
 cv2.waitKey(0)
