@@ -26,7 +26,10 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
 
         self.editSize.setText("5")
         self.editRadius.setText("1")
-        self.editSigma.setText("0.0000001")
+        self.editSigma.setText("0.000001")
+
+        self.compareBrightButton.clicked.connect(self.compareBright)
+        self.showHistButton.clicked.connect(self.showHist)
 
     def loadImage(self):
         self.label.setPixmap(img_name)
@@ -70,7 +73,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
                 img_out.itemset((i,j), b)
         end_time = time.process_time()
         self.timeTwoDim.setText("Time: " + str(end_time - start_time))
-        newName = 'sigma'+str(sigma)+'.bmp'
+        newName = 'twoDimImgOut.bmp'
         cv2.imwrite(newName, img_out)
         self.labelTwo.setPixmap(newName)
         
@@ -127,9 +130,28 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
                 img_out.itemset((i,j), b)
         end_time = time.process_time()
         self.timeOneDim.setText("Time: " + str(end_time - start_time))
-        newName = 'one_dim_sigma'+str(sigma)+'.bmp'
+        newName = 'oneDimImgOut.bmp'
         cv2.imwrite(newName, img_out)
         self.labelOne.setPixmap(newName)
+
+    def compareBright(self):
+        x = int(self.editX.toPlainText())
+        y = int(self.editY.toPlainText())
+        img_1d = cv2.imread('oneDimImgOut.bmp', cv2.IMREAD_GRAYSCALE)
+        img_2d = cv2.imread('twoDimImgOut.bmp',cv2.IMREAD_GRAYSCALE)
+        first_img = img.item(x,y)
+        oneDim_img = img_1d.item(x,y)
+        twoDim_img = img_2d.item(x,y)
+        self.browseBright.setText(str(first_img)+" "+str(oneDim_img)+" "+str(twoDim_img))
+
+    def showHist(self):
+        plt.hist(img.ravel(),256,[0,256]); 
+        plt.savefig("hist_first.png")
+        self.hist.setScaledContents(true)
+        self.hist.setPixmap("hist_first.png")
+
+
+
 
 
 def main():
