@@ -1,6 +1,5 @@
 import numpy as np 
 import cv2
-import math
 import matplotlib.pyplot as plt
 import sys
 from PySide2 import QtWidgets
@@ -12,7 +11,7 @@ import os
 import time
 
 
-img_name = 'cameraman.bmp'
+img_name = 'test.bmp'
 img = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
 
 
@@ -24,12 +23,13 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
         self.twoDimButton.clicked.connect(self.twoDimBlur)
         self.oneDimButton.clicked.connect(self.oneDimBlur)
 
-        self.editSize.setText("5")
-        self.editRadius.setText("1")
-        self.editSigma.setText("0.000001")
+        self.editRadius.setText("6")
+        self.editSigma.setText("2")
 
         self.compareBrightButton.clicked.connect(self.compareBright)
         self.showHistButton.clicked.connect(self.showHist)
+        self.showHistButton_2.clicked.connect(self.showHist_2)
+        self.showHistButton_3.clicked.connect(self.showHist_3)
 
     def loadImage(self):
         self.label.setPixmap(img_name)
@@ -43,14 +43,17 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
         height = img.shape[0]
         width = img.shape[1]
 
-        size = int(self.editSize.toPlainText())
-        radius = float(self.editRadius.toPlainText())
+        
+        radius = int(self.editRadius.toPlainText())
         sigma = float(self.editSigma.toPlainText())
+        size = int(2*radius+1)
 
         gauss = np.zeros((size,size))
         for i in range(size):
             for j in range(size):
-                gauss[i][j] = (1/math.sqrt(2*math.pi*sigma))*math.exp(-((i-radius-1)**2 + (j-radius-1)**2)/2*sigma**2)
+                gauss[i][j] = (1/np.sqrt(2*np.pi*sigma**2))*np.exp(-((i-radius)**2 + (j-radius)**2)/(2*sigma**2))
+        # print(gauss.sum())
+        # print()
         gauss = gauss / gauss.sum()
         self.tableWidget.setRowCount(size)
         self.tableWidget.setColumnCount(size)
@@ -61,13 +64,13 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
                 self.tableWidget.setItem(i, j, newItem)
 
         start_time = time.process_time()
-        for i in np.arange(2, height-2):
-            for j in np.arange(2, width-2):        
-                sum = 0
-                for k in np.arange(-2, 3):
-                    for l in np.arange(-2, 3):
+        for i in np.arange(radius, height-radius):
+            for j in np.arange(radius, width-radius):        
+                sum = 0.0
+                for k in np.arange(-radius, radius+1):
+                    for l in np.arange(-radius, radius+1):
                         a = img.item(i+k, j+l)
-                        p = gauss[2+k, 2+l]
+                        p = gauss[radius+k, radius+l]
                         sum = sum + (p * a)
                 b = sum
                 img_out.itemset((i,j), b)
@@ -76,20 +79,34 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
         newName = 'twoDimImgOut.bmp'
         cv2.imwrite(newName, img_out)
         self.labelTwo.setPixmap(newName)
+        plt.imshow(gauss, cmap=plt.get_cmap('jet'), interpolation='nearest')
+        plt.colorbar()
+        plt.show()
         
 
     def oneDimBlur(self):
+        img_temp = img.copy()
         img_out = img.copy()
         height = img.shape[0]
         width = img.shape[1]
         
-        size = int(self.editSize.toPlainText())
-        radius = float(self.editRadius.toPlainText())
+        
+        radius = int(self.editRadius.toPlainText())
         sigma = float(self.editSigma.toPlainText())
-        gauss = np.zeros((1,size))
-        for i in range(1):
+        size = int(2*radius+1)
+        gauss2D = np.zeros((size,size))
+        for i in range(size):
             for j in range(size):
-                gauss[i][j] = (1/math.sqrt(2*math.pi*sigma))*math.exp(-((i-radius-1)**2 + (j-radius-1)**2)/2*sigma**2)
+                gauss2D[i][j] = (1/np.sqrt(2*np.pi*sigma**2))*np.exp(-((i-radius)**2 + (j-radius)**2)/(2*sigma**2))
+        # print(gauss2D.sum())
+        # print()
+        gauss2D = gauss2D / gauss2D.sum()
+
+        gauss = np.zeros((1,size))
+        for j in range(size):
+            gauss[0][j] = gauss2D[:][j].sum()
+            # print(gauss[0][j])
+        # print(gauss.sum())
         gauss = gauss / gauss.sum()
 
         self.tableWidget_2.setRowCount(1)
@@ -99,40 +116,48 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
             for j in range(len(gauss[i])):
                 newItem = QTableWidgetItem(str(gauss[i][j]))
                 self.tableWidget_2.setItem(i, j, newItem) 
-                gauss_trans = np.zeros((size,1))
+        gauss_trans = np.zeros((size,1))
         for i in range(size):
-            for j in range(1):
-                gauss_trans[i][j] = (1/math.sqrt(2*math.pi*sigma))*math.exp(-((i-radius-1)**2 + (j-radius-1)**2)/2*sigma**2)
+            gauss_trans[i][0] = gauss2D[i][:].sum()
+        #     print(gauss_trans[i][0])
+        # print(gauss_trans.sum())
         gauss_trans = gauss_trans / gauss_trans.sum()
+        gauss_ish = gauss*gauss_trans #/ (gauss*gauss_trans).sum()
+        # for i in np.arange(size):
+        #     for j in np.arange(size):
+        #         print(gauss_ish[i][j] - gauss2D[i][j], end=" ")
+        #     print()
 
 
         start_time = time.process_time()
         for i in np.arange(height):
-            for j in np.arange(width-5):        
-                sum = 0
-                for k in np.arange(1):
-                    for l in np.arange(size):
-                        a = img.item(i+k, j+l)
-                        p = gauss[0,l]
-                        sum = sum + (p * a)
+            for j in np.arange(radius, width-radius):
+                sum = 0.0
+                for l in np.arange(-radius, radius+1):
+                    a = img.item(i, j+l)
+                    p = gauss[0, radius+l]
+                    sum = sum + (p * a)
+                b = sum
+                img_temp.itemset((i,j), b)
+        for i in np.arange(radius, height-radius):
+            for j in np.arange(width):
+                sum = 0.0
+                for k in np.arange(-radius, radius+1):
+                    a = img_temp.item(i+k, j)
+                    p = gauss_trans[radius+k, 0]
+                    sum = sum + (p * a)
+
                 b = sum
                 img_out.itemset((i,j), b)
 
-        for i in np.arange(height-5):
-            for j in np.arange(width):        
-                sum = 0
-                for k in np.arange(-2, 3):
-                    for l in np.arange(1):
-                        a = img_out.item(i+k, j+l)
-                        p = gauss_trans[l,0]
-                        sum = sum + (p * a)
-                b = sum
-                img_out.itemset((i,j), b)
         end_time = time.process_time()
         self.timeOneDim.setText("Time: " + str(end_time - start_time))
         newName = 'oneDimImgOut.bmp'
         cv2.imwrite(newName, img_out)
         self.labelOne.setPixmap(newName)
+        plt.imshow(gauss, cmap=plt.get_cmap('jet'), interpolation='nearest')
+        plt.colorbar()
+        plt.show()
 
     def compareBright(self):
         x = int(self.editX.toPlainText())
@@ -142,16 +167,30 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Form):
         first_img = img.item(x,y)
         oneDim_img = img_1d.item(x,y)
         twoDim_img = img_2d.item(x,y)
+        # test
+        height = img_1d.shape[0]
+        width = img_1d.shape[1]
+        # for x in np.arange(height):
+        #     for y in np.arange(width):
+        #         print(img_1d.item(x, y)-img_2d.item(x,y), end=" ")
+        #     print()
+        img.itemset((x,y), 0)
         self.browseBright.setText(str(first_img)+" "+str(oneDim_img)+" "+str(twoDim_img))
 
     def showHist(self):
         plt.hist(img.ravel(),256,[0,256]); 
-        plt.savefig("hist_first.png")
-        self.hist.setScaledContents(true)
-        self.hist.setPixmap("hist_first.png")
-
-
-
+        plt.savefig("hist.png")
+        plt.show()
+    def showHist_2(self):
+        img_1d = cv2.imread('oneDimImgOut.bmp', cv2.IMREAD_GRAYSCALE)
+        plt.hist(img_1d.ravel(),256,[0,256]); 
+        plt.savefig("hist.png")
+        plt.show()
+    def showHist_3(self):
+        img_2d = cv2.imread('twoDimImgOut.bmp',cv2.IMREAD_GRAYSCALE)
+        plt.hist(img_2d.ravel(),256,[0,256]); 
+        plt.savefig("hist.png")
+        plt.show()
 
 
 def main():

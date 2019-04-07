@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'form.ui',
 # licensing of 'form.ui' applies.
 #
-# Created: Wed Mar 27 03:01:56 2019
+# Created: Sun Apr  7 02:51:25 2019
 #      by: pyside2-uic  running on PySide2 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(1105, 1082)
+        Form.resize(1073, 771)
         self.loadImageButton = QtWidgets.QPushButton(Form)
         self.loadImageButton.setGeometry(QtCore.QRect(40, 300, 131, 51))
         self.loadImageButton.setObjectName("loadImageButton")
@@ -46,26 +46,18 @@ class Ui_Form(object):
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(0)
         self.tableWidget.setRowCount(0)
-        self.editSize = QtWidgets.QTextEdit(Form)
-        self.editSize.setGeometry(QtCore.QRect(90, 420, 141, 31))
-        self.editSize.setObjectName("editSize")
         self.editSigma = QtWidgets.QTextEdit(Form)
-        self.editSigma.setGeometry(QtCore.QRect(90, 460, 141, 31))
+        self.editSigma.setGeometry(QtCore.QRect(120, 420, 141, 31))
         self.editSigma.setObjectName("editSigma")
         self.editRadius = QtWidgets.QTextEdit(Form)
-        self.editRadius.setGeometry(QtCore.QRect(90, 500, 141, 31))
+        self.editRadius.setGeometry(QtCore.QRect(120, 460, 141, 31))
         self.editRadius.setObjectName("editRadius")
-        self.label_2 = QtWidgets.QLabel(Form)
-        self.label_2.setGeometry(QtCore.QRect(10, 420, 51, 41))
-        self.label_2.setScaledContents(False)
-        self.label_2.setWordWrap(True)
-        self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(Form)
-        self.label_3.setGeometry(QtCore.QRect(10, 450, 71, 51))
+        self.label_3.setGeometry(QtCore.QRect(40, 410, 71, 51))
         self.label_3.setWordWrap(True)
         self.label_3.setObjectName("label_3")
         self.label_4 = QtWidgets.QLabel(Form)
-        self.label_4.setGeometry(QtCore.QRect(10, 490, 61, 41))
+        self.label_4.setGeometry(QtCore.QRect(40, 450, 61, 41))
         self.label_4.setWordWrap(True)
         self.label_4.setObjectName("label_4")
         self.tableWidget_2 = QtWidgets.QTableWidget(Form)
@@ -92,7 +84,7 @@ class Ui_Form(object):
         self.compareBrightButton.setGeometry(QtCore.QRect(210, 580, 93, 28))
         self.compareBrightButton.setObjectName("compareBrightButton")
         self.browseBright = QtWidgets.QTextBrowser(Form)
-        self.browseBright.setGeometry(QtCore.QRect(60, 620, 256, 71))
+        self.browseBright.setGeometry(QtCore.QRect(50, 620, 256, 71))
         self.browseBright.setObjectName("browseBright")
         self.showHistButton = QtWidgets.QPushButton(Form)
         self.showHistButton.setGeometry(QtCore.QRect(170, 300, 151, 51))
@@ -103,18 +95,6 @@ class Ui_Form(object):
         self.showHistButton_3 = QtWidgets.QPushButton(Form)
         self.showHistButton_3.setGeometry(QtCore.QRect(850, 300, 151, 51))
         self.showHistButton_3.setObjectName("showHistButton_3")
-        self.hist = QtWidgets.QLabel(Form)
-        self.hist.setGeometry(QtCore.QRect(50, 800, 281, 281))
-        self.hist.setFrameShape(QtWidgets.QFrame.Box)
-        self.hist.setObjectName("hist")
-        self.hist_3 = QtWidgets.QLabel(Form)
-        self.hist_3.setGeometry(QtCore.QRect(740, 800, 281, 281))
-        self.hist_3.setFrameShape(QtWidgets.QFrame.Box)
-        self.hist_3.setObjectName("hist_3")
-        self.hist_2 = QtWidgets.QLabel(Form)
-        self.hist_2.setGeometry(QtCore.QRect(390, 800, 291, 281))
-        self.hist_2.setFrameShape(QtWidgets.QFrame.Box)
-        self.hist_2.setObjectName("hist_2")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -137,7 +117,6 @@ class Ui_Form(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Time: </p></body></html>", None, -1))
-        self.label_2.setText(QtWidgets.QApplication.translate("Form", "Размер матрицы", None, -1))
         self.label_3.setText(QtWidgets.QApplication.translate("Form", "Отклонение (сигма)", None, -1))
         self.label_4.setText(QtWidgets.QApplication.translate("Form", "Радиус апертуры", None, -1))
         self.editX.setHtml(QtWidgets.QApplication.translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -157,7 +136,4 @@ class Ui_Form(object):
         self.showHistButton.setText(QtWidgets.QApplication.translate("Form", "Показать гистограмму", None, -1))
         self.showHistButton_2.setText(QtWidgets.QApplication.translate("Form", "Показать гистограмму", None, -1))
         self.showHistButton_3.setText(QtWidgets.QApplication.translate("Form", "Показать гистограмму", None, -1))
-        self.hist.setText(QtWidgets.QApplication.translate("Form", "Гистограмма 1", None, -1))
-        self.hist_3.setText(QtWidgets.QApplication.translate("Form", "Гистограмма 3", None, -1))
-        self.hist_2.setText(QtWidgets.QApplication.translate("Form", "Гистограмма 2", None, -1))
 
